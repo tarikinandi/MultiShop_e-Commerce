@@ -4,7 +4,6 @@ using MultiShop.Order.Application.Features.CQRS.Commands.AddressCommands;
 using MultiShop.Order.Application.Features.CQRS.Handers.AddressHandlers;
 using MultiShop.Order.Application.Features.CQRS.Queries.AddressQueries;
 
-[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class AddressesController : ControllerBase

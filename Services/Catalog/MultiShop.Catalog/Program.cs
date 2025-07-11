@@ -11,12 +11,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer; // Explicitly include the A
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
-   opt =>
-   {
-       opt.Authority = builder.Configuration["IdentityServerUrl"];
-       opt.Audience = "ResourceCatalog";
-   });
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+    {
+        options.Authority = builder.Configuration["IdentityServerUrl"];
+        options.Audience = "ResourceCatalog";
+        options.RequireHttpsMetadata = false; // Set to true in production
+    });
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductDetailService, ProductDetailService>();

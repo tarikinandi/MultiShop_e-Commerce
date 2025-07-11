@@ -8,6 +8,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 {
     options.Authority = builder.Configuration["IdentityServerUrl"];
     options.Audience = "ResourceDiscount";
+    options.RequireHttpsMetadata = false;
 });
 
 // Add services to the container.

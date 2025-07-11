@@ -22,22 +22,6 @@ builder.Services.AddScoped<ICargoCustomerService, CargoCustomerManager>();
 builder.Services.AddScoped<ICargoDetailService, CargoDetailManager>();
 builder.Services.AddScoped<ICargoOperationService, CargoOperationManager>();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.Authority = builder.Configuration["IdentityServerUrl"];
-        options.Audience = "ResourceCargo";
-        options.RequireHttpsMetadata = false; // Development için
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateAudience = false, // Development için geçici olarak kapatýn
-            ValidateIssuer = false,   // Development için geçici olarak kapatýn
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ClockSkew = TimeSpan.Zero
-        };
-    });
-
 // Add services to the container.
 builder.Services.AddAutoMapper(cfg => cfg.AddProfile<AutoMapperProfile>());
 
@@ -56,8 +40,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthentication(); // Ensure authentication is used before authorization
 
 app.UseAuthorization();
 

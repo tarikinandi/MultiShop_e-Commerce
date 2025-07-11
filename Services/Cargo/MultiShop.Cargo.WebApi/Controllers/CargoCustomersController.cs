@@ -8,15 +8,14 @@ using MultiShop.Cargo.EntityLayer.Concrete;
 
 namespace MultiShop.Cargo.WebApi.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class CargoCustomerController : ControllerBase
+    public class CargoCustomersController : ControllerBase
     {
         private readonly ICargoCustomerService _cargoCustomerService;
         private readonly IMapper _mapper;
 
-        public CargoCustomerController(ICargoCustomerService cargoCustomerService, IMapper mapper)
+        public CargoCustomersController(ICargoCustomerService cargoCustomerService, IMapper mapper)
         {
             _cargoCustomerService = cargoCustomerService;
             _mapper = mapper;

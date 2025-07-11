@@ -4,7 +4,6 @@ using MultiShop.Order.Application.Features.CQRS.Commands.OrderDetailCommands;
 using MultiShop.Order.Application.Features.CQRS.Handlers.OrderDetailHandlers;
 using MultiShop.Order.Application.Features.CQRS.Queries.OrderDetailQueries;
 
-[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class OrderDetailsController : ControllerBase

@@ -11,12 +11,12 @@ namespace MultiShop.Cargo.WebApi.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class CargoOperationController : ControllerBase
+    public class CargoOperationsController : ControllerBase
     {
         private readonly ICargoOperationService _cargoOperationService;
         private readonly IMapper _mapper;
 
-        public CargoOperationController(ICargoOperationService cargoOperationService, IMapper mapper)
+        public CargoOperationsController(ICargoOperationService cargoOperationService, IMapper mapper)
         {
             _cargoOperationService = cargoOperationService;
             _mapper = mapper;
