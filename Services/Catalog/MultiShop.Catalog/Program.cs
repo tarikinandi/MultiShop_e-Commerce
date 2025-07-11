@@ -5,6 +5,7 @@ using MultiShop.Catalog.Services.ProductDetailServices;
 using MultiShop.Catalog.Services.ProductImageServices;
 using MultiShop.Catalog.Services.ProductServices;
 using MultiShop.Catalog.Settings;
+using MultiShop.Catalog.Middleware;
 using System.Reflection;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer; // Explicitly include the AutoMapper namespace
@@ -103,6 +104,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<AuthenticationErrorHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseCors("CorsPolicy");

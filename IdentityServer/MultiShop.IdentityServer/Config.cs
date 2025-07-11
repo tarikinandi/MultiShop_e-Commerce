@@ -4,6 +4,7 @@
 
 using IdentityServer4;
 using IdentityServer4.Models;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 
 namespace MultiShop.IdentityServer
@@ -37,44 +38,49 @@ namespace MultiShop.IdentityServer
 
         };
 
-        public static IEnumerable<Client> Clients => new Client[]
+        public static IEnumerable<Client> GetClients(IConfiguration configuration)
         {
-            //Visitor
-            new Client
+            var clientSecrets = configuration.GetSection("IdentityServerSettings:ClientSecrets");
+            
+            return new Client[]
             {
-                ClientId = "MultiShopVisitorId",
-                ClientName = "MultiShop Visitor User",
-                AllowedGrantTypes= GrantTypes.ClientCredentials,
-                ClientSecrets={new Secret("MultiShopSecret" .Sha256())},
-                AllowedScopes = { "DiscountFullPermission" }
-            },
-
-            //Manager
-            new Client
-            {
-                ClientId = "MultiShopManagerId",
-                ClientName = "MultiShop Manager User",
-                AllowedGrantTypes= GrantTypes.ClientCredentials,
-                ClientSecrets={new Secret("MultiShopSecret" .Sha256())},
-                AllowedScopes = {"CatalogFullPermission", "CatalogReadPermission" }
-            },
-
-            //Admin
-            new Client
-            {
-                ClientId = "MultiShopAdminId",
-                ClientName = "MultiShop Admin User",
-                AllowedGrantTypes= GrantTypes.ClientCredentials,
-                ClientSecrets={new Secret("MultiShopSecret" .Sha256())},
-                AllowedScopes = {"CatalogFullPermission", "CatalogReadPermission", "DiscountFullPermission", 
-                    "OrderFullPermission","CargoFullPermission",
-                IdentityServerConstants.LocalApi.ScopeName,
-                IdentityServerConstants.StandardScopes.Email,
-                IdentityServerConstants.StandardScopes.OpenId,
-                IdentityServerConstants.StandardScopes.Profile
+                //Visitor
+                new Client
+                {
+                    ClientId = "MultiShopVisitorId",
+                    ClientName = "MultiShop Visitor User",
+                    AllowedGrantTypes= GrantTypes.ClientCredentials,
+                    ClientSecrets={new Secret(clientSecrets["MultiShopVisitorId"].Sha256())},
+                    AllowedScopes = { "DiscountFullPermission" }
                 },
-                AccessTokenLifetime = 3600,
-            }
-        };
+
+                //Manager
+                new Client
+                {
+                    ClientId = "MultiShopManagerId",
+                    ClientName = "MultiShop Manager User",
+                    AllowedGrantTypes= GrantTypes.ClientCredentials,
+                    ClientSecrets={new Secret(clientSecrets["MultiShopManagerId"].Sha256())},
+                    AllowedScopes = {"CatalogFullPermission", "CatalogReadPermission" }
+                },
+
+                //Admin
+                new Client
+                {
+                    ClientId = "MultiShopAdminId",
+                    ClientName = "MultiShop Admin User",
+                    AllowedGrantTypes= GrantTypes.ClientCredentials,
+                    ClientSecrets={new Secret(clientSecrets["MultiShopAdminId"].Sha256())},
+                    AllowedScopes = {"CatalogFullPermission", "CatalogReadPermission", "DiscountFullPermission", 
+                        "OrderFullPermission","CargoFullPermission",
+                    IdentityServerConstants.LocalApi.ScopeName,
+                    IdentityServerConstants.StandardScopes.Email,
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile
+                    },
+                    AccessTokenLifetime = 3600,
+                }
+            };
+        }
     }
 }
