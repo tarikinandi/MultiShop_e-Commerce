@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Options;
+    using Microsoft.Extensions.Options;
 using MultiShop.Catalog.Services.CategoryServices;
 using MultiShop.Catalog.Services.ProductDetailDetailServices;
 using MultiShop.Catalog.Services.ProductDetailServices;
@@ -6,9 +6,17 @@ using MultiShop.Catalog.Services.ProductImageServices;
 using MultiShop.Catalog.Services.ProductServices;
 using MultiShop.Catalog.Settings;
 using System.Reflection;
-using AutoMapper; // Explicitly include the AutoMapper namespace
+using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer; // Explicitly include the AutoMapper namespace
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
+   opt =>
+   {
+       opt.Authority = builder.Configuration["IdentityServerUrl"];
+       opt.Audience = "ResourceCatalog";
+   });
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductDetailService, ProductDetailService>();
@@ -36,6 +44,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
