@@ -16,28 +16,36 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 {
     opt.Authority = builder.Configuration["IdentityServerUrl"];
     opt.Audience = "ResourceOrder";
-    opt.RequireHttpsMetadata = false; // Development için
+    opt.RequireHttpsMetadata = !builder.Environment.IsDevelopment(); // Development iï¿½in
     opt.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateAudience = false, // Development için geçici olarak kapatýn
-        ValidateIssuer = false,   // Development için geçici olarak kapatýn
+        ValidateAudience = true, // Development iï¿½in geï¿½ici olarak kapatï¿½n
+        ValidateIssuer = true,   // Development iï¿½in geï¿½ici olarak kapatï¿½n
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ClockSkew = TimeSpan.Zero
+        ClockSkew = TimeSpan.FromMinutes(5) // Allow 5 minutes clock skew
     };
 });
 
-// Context Kaydý
+// Add authorization policies
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("OrderFullPermission", policy =>
+        policy.RequireAuthenticatedUser()
+              .RequireClaim("scope", "OrderFullPermission"));
+});
+
+// Context Kaydï¿½
 builder.Services.AddDbContext<OrderContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Repository Kaydý
+// Repository Kaydï¿½
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 // Application servislerini ekle
 builder.Services.AddAplicationServices(builder.Configuration);
 
-// Handler'larýn Kaydý
+// Handler'larï¿½n Kaydï¿½
 builder.Services.AddScoped<GetAddressQueryHandler>();
 builder.Services.AddScoped<GetAddressByIdQueryHandler>();
 builder.Services.AddScoped<CreateAddressCommandHandler>();
@@ -50,7 +58,7 @@ builder.Services.AddScoped<CreateOrderDetailCommandHandler>();
 builder.Services.AddScoped<UpdateOrderDetailCommandHandler>();
 builder.Services.AddScoped<RemoveOrderDetailCommandHandler>();
 
-// Diðer servis kayýtlarý
+// Diï¿½er servis kayï¿½tlarï¿½
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

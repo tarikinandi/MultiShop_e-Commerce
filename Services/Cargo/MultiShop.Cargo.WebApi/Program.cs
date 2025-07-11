@@ -27,16 +27,24 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.Authority = builder.Configuration["IdentityServerUrl"];
         options.Audience = "ResourceCargo";
-        options.RequireHttpsMetadata = false; // Development için
+        options.RequireHttpsMetadata = !builder.Environment.IsDevelopment(); // Development iï¿½in
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateAudience = false, // Development için geçici olarak kapatýn
-            ValidateIssuer = false,   // Development için geçici olarak kapatýn
+            ValidateAudience = true, // Development iï¿½in geï¿½ici olarak kapatï¿½n
+            ValidateIssuer = true,   // Development iï¿½in geï¿½ici olarak kapatï¿½n
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ClockSkew = TimeSpan.Zero
+            ClockSkew = TimeSpan.FromMinutes(5) // Allow 5 minutes clock skew
         };
     });
+
+// Add authorization policies
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("CargoFullPermission", policy =>
+        policy.RequireAuthenticatedUser()
+              .RequireClaim("scope", "CargoFullPermission"));
+});
 
 // Add services to the container.
 builder.Services.AddAutoMapper(cfg => cfg.AddProfile<AutoMapperProfile>());

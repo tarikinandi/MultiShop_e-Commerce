@@ -6,7 +6,6 @@ using MultiShop.Catalog.Services.ProductServices;
 
 namespace MultiShop.Catalog.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
@@ -19,6 +18,7 @@ namespace MultiShop.Catalog.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "CatalogReadPermission")]
         public async Task<IActionResult> ProductList()
         {
             var values = await _productService.GetAllProductAsync();
@@ -26,6 +26,7 @@ namespace MultiShop.Catalog.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "CatalogReadPermission")]
         public async Task<IActionResult> GetByIdProduct(string id)
         {
             var values = await _productService.GetByIdProductAsync(id);
@@ -33,6 +34,7 @@ namespace MultiShop.Catalog.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "CatalogFullPermission")]
         public async Task<IActionResult> CreateProduct(CreateProductDto createProductDto)
         {
             await _productService.CreateProductAsync(createProductDto);
@@ -40,6 +42,7 @@ namespace MultiShop.Catalog.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Policy = "CatalogFullPermission")]
         public async Task<IActionResult> DeleteProduct(string id)
         {
             await _productService.DeleteProductAsync(id);
@@ -47,6 +50,7 @@ namespace MultiShop.Catalog.Controllers
         }
 
         [HttpPut]
+        [Authorize(Policy = "CatalogFullPermission")]
         public async Task<IActionResult> UpdateProduct(UpdateProductDto updateProductDto)
         {
             await _productService.UpdateProductAsync(updateProductDto);

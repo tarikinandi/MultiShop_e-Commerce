@@ -8,6 +8,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 {
     options.Authority = builder.Configuration["IdentityServerUrl"];
     options.Audience = "ResourceDiscount";
+    options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
+});
+
+// Add authorization policies
+builder.Services.AddAuthorization(policyOptions =>
+{
+    policyOptions.AddPolicy("DiscountFullPermission", policy =>
+        policy.RequireAuthenticatedUser()
+              .RequireClaim("scope", "DiscountFullPermission"));
 });
 
 // Add services to the container.

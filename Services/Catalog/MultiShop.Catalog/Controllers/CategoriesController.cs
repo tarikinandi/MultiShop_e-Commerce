@@ -5,7 +5,6 @@ using MultiShop.Catalog.Services.CategoryServices;
 
 namespace MultiShop.Catalog.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
@@ -18,6 +17,7 @@ namespace MultiShop.Catalog.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "CatalogReadPermission")]
         public async Task<IActionResult> CategoryList()
         {
             var values = await _categoryService.GetAllCategoryAsync();
@@ -25,6 +25,7 @@ namespace MultiShop.Catalog.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "CatalogReadPermission")]
         public async Task<IActionResult> GetByIdCategory(string id)
         {
             var values = await _categoryService.GetByIdCategoryAsync(id);
@@ -32,6 +33,7 @@ namespace MultiShop.Catalog.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "CatalogFullPermission")]
         public async Task<IActionResult> CreateCategory(CreateCategoryDto createCategoryDto)
         {
             await _categoryService.CreateCategoryAsync(createCategoryDto);
@@ -39,6 +41,7 @@ namespace MultiShop.Catalog.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Policy = "CatalogFullPermission")]
         public async Task<IActionResult> DeleteCategory(string id)
         {
             await _categoryService.DeleteCategoryAsync(id);
@@ -46,6 +49,7 @@ namespace MultiShop.Catalog.Controllers
         }
 
         [HttpPut]
+        [Authorize(Policy = "CatalogFullPermission")]
         public async Task<IActionResult> UpdateCategory(UpdateCategoryDto updateCategoryDto)
         {
             await _categoryService.UpdateCategoryAsync(updateCategoryDto);
