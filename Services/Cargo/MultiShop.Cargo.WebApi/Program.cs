@@ -1,4 +1,4 @@
-using MultiShop.Cargo.BusinessLayer.Mapping;
+﻿using MultiShop.Cargo.BusinessLayer.Mapping;
 using AutoMapper;
 using MultiShop.Cargo.DataAccessLayer.Concrete;
 using MultiShop.Cargo.DataAccessLayer.Abstract;
@@ -9,6 +9,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.Authority = builder.Configuration["IdentityServerUrl"];
+    options.Audience = "ResourceCargo";
+    options.RequireHttpsMetadata = false;
+});
+
 
 builder.Services.AddDbContext<CargoContext>();
 
@@ -25,6 +33,8 @@ builder.Services.AddScoped<ICargoOperationService, CargoOperationManager>();
 // Add services to the container.
 builder.Services.AddAutoMapper(cfg => cfg.AddProfile<AutoMapperProfile>());
 
+
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -40,6 +50,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

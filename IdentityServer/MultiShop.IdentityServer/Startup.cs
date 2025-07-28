@@ -24,17 +24,17 @@ namespace MultiShop.IdentityServer
 
         public void ConfigureServices(IServiceCollection services)
         {
-            // Identity için EF DbContext
+            // EF Identity DB
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            // ASP.NET Core Identity
+            // Identity tanımı
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            // IdentityServer
-            var builder = services.AddIdentityServer(options =>
+            // 🔥 IdentityServer yapılandırması
+            services.AddIdentityServer(options =>
             {
                 options.Events.RaiseErrorEvents = true;
                 options.Events.RaiseInformationEvents = true;
@@ -46,22 +46,10 @@ namespace MultiShop.IdentityServer
                 .AddInMemoryApiResources(Config.ApiResources)
                 .AddInMemoryApiScopes(Config.ApiScopes)
                 .AddInMemoryClients(Config.Clients)
-                .AddAspNetIdentity<ApplicationUser>();
+                .AddAspNetIdentity<ApplicationUser>()
+                .AddDeveloperSigningCredential(); // ⬅️ Bu en son olmalı ⚠️
 
-            // Geliştirme ortamı için Signing Credential (JWT imzalama)
-            builder.AddDeveloperSigningCredential(); // ✅ Bu olmadan JWT imzalanmaz
-
-            // Local API Authentication (ResourceOwnerPassword için)
-            services.AddLocalApiAuthentication();
-
-            // (İsteğe Bağlı) Harici sağlayıcılar - Google gibi
-            services.AddAuthentication()
-                .AddGoogle(options =>
-                {
-                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                    options.ClientId = "copy client ID from Google here";
-                    options.ClientSecret = "copy client secret from Google here";
-                });
+            services.AddLocalApiAuthentication(); // İç tokenlar için
 
             services.AddControllersWithViews();
         }

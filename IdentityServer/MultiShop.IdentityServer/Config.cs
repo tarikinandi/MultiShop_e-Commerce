@@ -16,10 +16,11 @@ namespace MultiShop.IdentityServer
           new ApiResource("ResourceDiscount"){Scopes = { "DiscountFullPermission"}},
           new ApiResource("ResourceOrder"){Scopes = { "OrderFullPermission"}},
           new ApiResource("ResourceCargo"){Scopes = { "CargoFullPermission"}},
-          new ApiResource(IdentityServerConstants.LocalApi.ScopeName) 
+          new ApiResource("ResourceBasket"){Scopes = { "BasketFullPermission"}},
+          new ApiResource(IdentityServerConstants.LocalApi.ScopeName)
         };
 
-        public static IEnumerable<IdentityResource> IdentityResources=> new IdentityResource[]
+        public static IEnumerable<IdentityResource> IdentityResources => new IdentityResource[]
         {
             new IdentityResources.OpenId(),
             new IdentityResources.Profile(),
@@ -33,6 +34,7 @@ namespace MultiShop.IdentityServer
             new ApiScope("DiscountFullPermission", "Full Permission for Discount API"),
             new ApiScope("OrderFullPermission", "Full Permission for Order API"),
             new ApiScope("CargoFullPermission", "Full Permission for Cargo API"),
+            new ApiScope("BasketFullPermission", "Full Permission for Basket API"),
             new ApiScope(IdentityServerConstants.LocalApi.ScopeName)
 
         };
@@ -44,9 +46,9 @@ namespace MultiShop.IdentityServer
             {
                 ClientId = "MultiShopVisitorId",
                 ClientName = "MultiShop Visitor User",
-                AllowedGrantTypes= GrantTypes.ClientCredentials,
+                AllowedGrantTypes= GrantTypes.ResourceOwnerPasswordAndClientCredentials,
                 ClientSecrets={new Secret("MultiShopSecret" .Sha256())},
-                AllowedScopes = { "DiscountFullPermission" }
+                AllowedScopes = { "DiscountFullPermission" , "BasketFullPermission" }
             },
 
             //Manager
@@ -54,26 +56,31 @@ namespace MultiShop.IdentityServer
             {
                 ClientId = "MultiShopManagerId",
                 ClientName = "MultiShop Manager User",
-                AllowedGrantTypes= GrantTypes.ClientCredentials,
+                AllowedGrantTypes= GrantTypes.ResourceOwnerPasswordAndClientCredentials,
                 ClientSecrets={new Secret("MultiShopSecret" .Sha256())},
-                AllowedScopes = {"CatalogFullPermission", "CatalogReadPermission" }
+                AllowedScopes = {"CatalogFullPermission", "CatalogReadPermission" , "BasketFullPermission" }
             },
 
             //Admin
-            new Client
+           new Client
             {
                 ClientId = "MultiShopAdminId",
                 ClientName = "MultiShop Admin User",
-                AllowedGrantTypes= GrantTypes.ClientCredentials,
-                ClientSecrets={new Secret("MultiShopSecret" .Sha256())},
-                AllowedScopes = {"CatalogFullPermission", "CatalogReadPermission", "DiscountFullPermission", 
-                    "OrderFullPermission","CargoFullPermission",
-                IdentityServerConstants.LocalApi.ScopeName,
-                IdentityServerConstants.StandardScopes.Email,
-                IdentityServerConstants.StandardScopes.OpenId,
-                IdentityServerConstants.StandardScopes.Profile
+                AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
+                ClientSecrets = { new Secret("MultiShopSecret".Sha256()) },
+                AllowedScopes = {
+                    "OrderFullPermission",
+                    "CatalogFullPermission",
+                    "CatalogReadPermission",
+                    "DiscountFullPermission",
+                    "CargoFullPermission",
+                    "BasketFullPermission",
+                    IdentityServerConstants.LocalApi.ScopeName,
+                    IdentityServerConstants.StandardScopes.Email,
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile
                 },
-                AccessTokenLifetime = 3600,
+                AccessTokenLifetime = 600
             }
         };
     }
